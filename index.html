@@ -1,0 +1,170 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-height:100vh}
+
+:root{
+  --ink:#1a0800;--deep:#2d1000;--warm:#4a1a00;--amber:#c87020;
+  --gold:#e8a030;--pale:#f5d080;--ivory:#fdf0e0;--blush:#f08060;
+  --rose:#d04050;--petal:#f8c0b0;--cherry:#8b1a2a;
+}
+
+.header{background:linear-gradient(170deg,#0d0400,#2d1200,#4a1a00);text-align:center;padding:3rem 1.5rem 2rem;border-bottom:1px solid rgba(232,160,48,.15)}
+.header h1{font-family:'Great Vibes',cursive;font-size:clamp(2.2rem,6vw,4rem);color:var(--gold);margin-bottom:.3rem}
+.header p{color:var(--petal);font-style:italic;font-size:.9rem;letter-spacing:3px;text-transform:uppercase}
+
+.container{max-width:700px;margin:0 auto;padding:2rem 1rem}
+
+.btn{background:var(--amber);color:var(--ink);border:none;padding:.7rem 1.8rem;border-radius:50px;font-family:'Josefin Sans',sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.btn:hover{background:var(--gold);transform:scale(1.04)}
+.btn-sm{padding:.5rem 1.2rem;font-size:.75rem}
+.btn-rose{background:var(--rose)}
+.btn-rose:hover{background:#e05060}
+
+.letter-list{display:grid;gap:.8rem}
+.letter-card{background:rgba(200,112,32,.07);border:1px solid rgba(200,112,32,.2);border-radius:1rem;padding:1.2rem 1.5rem;cursor:pointer;transition:all .3s;display:flex;justify-content:space-between;align-items:center}
+.letter-card:hover{background:rgba(200,112,32,.15);border-color:var(--gold);transform:translateX(5px)}
+.letter-card.locked{opacity:.7}
+.letter-card.locked .lc-title::after{content:' 🔒';font-size:.8rem}
+.lc-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);font-style:italic}
+.lc-date{font-size:.75rem;color:var(--amber);letter-spacing:1px;margin-top:.2rem}
+.lc-lock{font-size:1rem;color:var(--petal)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:#2d1000;border:1px solid rgba(232,160,48,.3);border-radius:1.5rem;padding:2rem;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:var(--petal);font-size:1.5rem;cursor:pointer}
+.modal h2{font-family:'Great Vibes',cursive;font-size:2rem;color:var(--gold);margin-bottom:.5rem}
+.modal .date{font-size:.75rem;color:var(--amber);letter-spacing:2px;margin-bottom:1.5rem}
+.modal .body{font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;line-height:2;color:var(--petal);white-space:pre-wrap}
+.pw-input{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+.pw-input input{flex:1;min-width:150px;background:rgba(255,255,255,.08);border:1px solid rgba(232,160,48,.3);border-radius:50px;padding:.7rem 1.2rem;color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-size:.9rem;outline:none}
+.pw-input input:focus{border-color:var(--gold)}
+.pw-error{color:var(--rose);font-size:.85rem;margin-top:.5rem;display:none}
+
+.new-letter-btn{display:block;margin:0 auto 2rem}
+
+.new-form{display:grid;gap:1rem}
+.new-form input,.new-form textarea,.new-form select{background:rgba(255,255,255,.06);border:1px solid rgba(232,160,48,.25);border-radius:.8rem;padding:.8rem 1rem;color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-size:.9rem;outline:none}
+.new-form input:focus,.new-form textarea:focus{border-color:var(--gold)}
+.new-form textarea{min-height:200px;resize:vertical;font-family:'Playfair Display',serif;font-style:italic;line-height:1.8}
+.new-form label{font-size:.8rem;letter-spacing:2px;color:var(--pale);text-transform:uppercase}
+.new-form .row{display:grid;gap:.4rem}
+.empty-state{text-align:center;padding:4rem 1rem;color:var(--amber);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem;line-height:2}
+
+.footer{text-align:center;padding:2rem;border-top:1px solid rgba(232,160,48,.1);color:var(--amber);font-size:.8rem;letter-spacing:2px;margin-top:2rem}
+</style>
+
+<div class="header">
+  <h1>Letters to You</h1>
+  <p>✧ private words, locked with love ✧</p>
+</div>
+
+<div class="container">
+  <button class="btn new-letter-btn" onclick="showNewForm()">✎ Write a New Letter</button>
+
+  <div id="letterList" class="letter-list"></div>
+
+  <div id="emptyState" class="empty-state">
+    No letters yet...<br>
+    Write your first one above ✎
+  </div>
+</div>
+
+<div class="modal-overlay" id="newModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('newModal')">✕</button>
+    <h2 style="text-align:center;font-size:1.5rem;font-family:'Great Vibes',cursive">Write a Letter</h2>
+    <p style="text-align:center;color:var(--petal);font-size:.85rem;margin-bottom:1.5rem">Words from the heart, sealed with a secret</p>
+    <div class="new-form">
+      <div class="row"><label>To</label><input id="newTo" placeholder="My dearest..." value="My dearest Helsa"></div>
+      <div class="row"><label>Title</label><input id="newTitle" placeholder="A letter title..."></div>
+      <div class="row"><label>Your Letter</label><textarea id="newBody" placeholder="Write from the heart..."></textarea></div>
+      <div class="row"><label>Password (to lock this letter)</label><input id="newPw" type="password" placeholder="Set a secret password"></div>
+      <button class="btn" onclick="saveLetter()" style="margin-top:.5rem">💛 Save & Lock Letter</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="viewModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
+    <h2 id="viewTo"></h2>
+    <div class="date" id="viewDate"></div>
+    <div class="body" id="viewBody"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pwModal">
+  <div class="modal" style="text-align:center">
+    <button class="modal-close" onclick="closeModal('pwModal')">✕</button>
+    <h2 style="font-size:1.8rem">🔒</h2>
+    <p style="color:var(--petal);font-style:italic;margin:.5rem 0 1rem;font-family:'Playfair Display',serif">This letter is locked with a password</p>
+    <div class="pw-input" style="justify-content:center">
+      <input id="pwInput" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')unlockLetter()">
+      <button class="btn btn-sm" onclick="unlockLetter()">Unlock</button>
+    </div>
+    <div class="pw-error" id="pwError">Wrong password. Try again 💛</div>
+  </div>
+</div>
+
+<div class="footer">✧ written with love, sealed with a secret ✧</div>
+
+<script>
+let letters=JSON.parse(localStorage.getItem('loveLetters')||'[]');
+let pwTarget=null;
+
+function render(){
+  const list=document.getElementById('letterList');
+  const empty=document.getElementById('emptyState');
+  list.innerHTML='';
+  if(letters.length===0){empty.style.display='block';return}
+  empty.style.display='none';
+  letters.forEach((l,i)=>{
+    const div=document.createElement('div');
+    div.className='letter-card'+(l.pw?' locked':'');
+    div.innerHTML=`<div><div class="lc-title">${esc(l.title)}</div><div class="lc-date">${l.date} · ${esc(l.to)}</div></div><div class="lc-lock">${l.pw?'🔒':'💛'}</div>`;
+    div.onclick=()=>openLetter(i);
+    list.appendChild(div);
+  });
+}
+
+function openLetter(i){
+  const l=letters[i];
+  if(l.pw){pwTarget=i;document.getElementById('pwInput').value='';document.getElementById('pwError').style.display='none';openModal('pwModal')}
+  else{showLetter(l)}
+}
+
+function unlockLetter(){
+  const l=letters[pwTarget];
+  if(document.getElementById('pwInput').value===l.pw){closeModal('pwModal');showLetter(l)}
+  else{document.getElementById('pwError').style.display='block'}
+}
+
+function showLetter(l){
+  document.getElementById('viewTo').textContent=l.to;
+  document.getElementById('viewDate').textContent=l.date;
+  document.getElementById('viewBody').textContent=l.body;
+  openModal('viewModal');
+}
+
+function saveLetter(){
+  const to=document.getElementById('newTo').value.trim();
+  const title=document.getElementById('newTitle').value.trim();
+  const body=document.getElementById('newBody').value.trim();
+  const pw=document.getElementById('newPw').value;
+  if(!title||!body){alert('Please write a title and your letter 💛');return}
+  letters.push({to:to||'My dearest',title,body,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),pw:pw||null});
+  localStorage.setItem('loveLetters',JSON.stringify(letters));
+  document.getElementById('newTitle').value='';document.getElementById('newBody').value='';document.getElementById('newPw').value='';
+  closeModal('newModal');render();
+}
+
+function showNewForm(){openModal('newModal')}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+render();
+</script>
