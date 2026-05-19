@@ -111,6 +111,19 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
 .pw-input input:focus{border-color:var(--gold)}
 .pw-error{color:var(--rose);font-size:.85rem;margin-top:.7rem;display:none}
 
+/* ── INK EFFECT ── */
+.ink-cursor{display:inline-block;width:2px;height:1.2em;background:var(--cherry);margin-left:2px;vertical-align:text-bottom;animation:blink .8s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.ink-char{opacity:0;animation:fadeIn .03s forwards}
+@keyframes fadeIn{to{opacity:1}}
+.lp-body.inking{min-height:100px}
+
+/* ── SYNC ── */
+.sync-bar{text-align:center;margin:-1rem 0 1.5rem}
+.sync-btn{background:transparent;color:var(--amber);border:1px solid rgba(200,112,32,.25);border-radius:50px;padding:.4rem 1.2rem;font-family:'Josefin Sans',sans-serif;font-size:.72rem;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.sync-btn:hover{background:rgba(200,112,32,.12);border-color:var(--gold);color:var(--gold)}
+.sync-status{font-size:.72rem;color:var(--petal);margin-top:.4rem;font-style:italic;min-height:1rem;opacity:.7}
+
 .empty-state{text-align:center;padding:4rem 1rem;color:var(--amber);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem;line-height:2}
 
 .footer{text-align:center;padding:2rem;border-top:1px solid rgba(232,160,48,.1);color:var(--amber);font-size:.8rem;letter-spacing:2px;margin-top:2rem}
@@ -128,6 +141,11 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
 
 <div class="container">
   <button class="btn" onclick="showNewForm()" style="display:block;margin:0 auto 2rem">✎ Write a New Letter</button>
+  <div class="sync-bar">
+    <button class="sync-btn" onclick="syncFromCloud()">☁ Load from Cloud</button>
+    <button class="sync-btn" onclick="saveToCloud()" style="margin-left:.5rem">☁ Save to Cloud</button>
+    <div class="sync-status" id="syncStatus"></div>
+  </div>
   <div id="letterList" class="envelope-list"></div>
   <div id="emptyState" class="empty-state">No letters yet...<br>Write your first one above ✎</div>
 </div>
@@ -251,10 +269,11 @@ function showPaper(l){
       <div class="lp-candle"><div class="candle-glow"></div><div class="candle-flame"></div><div class="candle-wick"></div><div class="candle-body"></div></div>
       <div class="lp-to">${esc(l.to)}</div>
       <div class="lp-date">${l.date}</div>
-      <div class="lp-body">${esc(l.body)}</div>
+      <div class="lp-body inking" id="inkBody"></div>
       <div class="lp-sign">💛</div>
     </div>
   `;
+  inkEffect('inkBody',l.body);
 }
 
 function closeEnvelope(){
@@ -275,6 +294,65 @@ function saveLetter(){
   closeModal('newModal');render();
 }
 
+function inkEffect(id,text){
+  const el=document.getElementById(id);if(!el)return;
+  el.textContent='';let i=0;const speed=25;
+  function write(){
+    if(i<text.length){
+      const span=document.createElement('span');
+      span.className='ink-char';span.textContent=text[i];
+      el.appendChild(span);
+      i++;
+      setTimeout(write,speed);
+    }
+  }
+  write();
+}
+
+const GITHUB_USER='aloowwwwiamadhi-glitch';
+const GITHUB_REPO='love-letters';
+let syncToken=localStorage.getItem('ghToken')||'';
+
+function setStatus(msg){document.getElementById('syncStatus').textContent=msg}
+
+async function syncFromCloud(){
+  setStatus('Loading from cloud...');
+  try{
+    const r=await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/letters.json`);
+    if(!r.ok){setStatus('No cloud backup found yet');return}
+    const data=await r.json();
+    const cloud=JSON.parse(decodeURIComponent(escape(atob(data.content))));
+    if(cloud.length>0){
+      if(letters.length>0&&!confirm('This will replace your local letters. Continue?')){setStatus('Cancelled');return}
+      letters=cloud;localStorage.setItem('loveLetters',JSON.stringify(letters));render();
+      setStatus(`Loaded ${letters.length} letter(s) from cloud ✨`);
+    }
+  }catch(e){setStatus('Failed to load: '+e.message)}
+}
+
+async function saveToCloud(){
+  if(!syncToken){
+    const t=prompt('Enter your GitHub token (repo scope):\nCreate one at github.com/settings/tokens');
+    if(!t)return;
+    syncToken=t;localStorage.setItem('ghToken',t);
+  }
+  setStatus('Saving to cloud...');
+  try{
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(letters))));
+    const shaR=await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/letters.json`);
+    let sha=null;
+    if(shaR.ok){const d=await shaR.json();sha=d.sha}
+    const body={message:'Sync love letters',content,sha};
+    const r=await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/letters.json`,{
+      method:'PUT',headers:{Authorization:`token ${syncToken}`,`Content-Type`:'application/json'},
+      body:JSON.stringify(body)
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.message||'Auth failed')}
+    setStatus(`Saved ${letters.length} letter(s) to cloud ☁️`);
+  }catch(e){setStatus('Failed: '+e.message);syncToken='';localStorage.removeItem('ghToken')}
+}
+
+setTimeout(syncFromCloud,1000);
 function showNewForm(){openModal('newModal')}
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
