@@ -61,7 +61,8 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
 /* ── MODAL OVERLAY ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem;backdrop-filter:blur(4px)}
 .modal-overlay.open{display:flex}
-.modal{background:#2d1000;background:linear-gradient(160deg,#2d1000,#1a0800);border:1px solid rgba(232,160,48,.3);border-radius:1.5rem;padding:2rem;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;position:relative;animation:modalIn .4s ease}
+.modal{background:#2d1000;background:linear-gradient(160deg,#2d1000,#1a0800);border:1px solid rgba(232,160,48,.3);border-radius:1.5rem;padding:2rem;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;position:relative;animation:modalIn .4s ease;scrollbar-width:none;-ms-overflow-style:none}
+.modal::-webkit-scrollbar{display:none}
 @keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 .modal-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:var(--petal);font-size:1.5rem;cursor:pointer;z-index:2;transition:transform .2s}
 .modal-close:hover{transform:rotate(90deg)}
