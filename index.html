@@ -140,7 +140,7 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
 </div>
 
 <div class="container">
-  <button class="btn" onclick="showNewForm()" style="display:block;margin:0 auto 2rem">✎ Write a New Letter</button>
+  <button class="btn" onclick="document.getElementById('newModal').classList.add('open')" style="display:block;margin:0 auto 2rem">✎ Write a New Letter</button>
   <div class="sync-bar">
     <button class="sync-btn" onclick="syncFromCloud()">☁ Load from Cloud</button>
     <button class="sync-btn" onclick="saveToCloud()" style="margin-left:.5rem">☁ Save to Cloud</button>
