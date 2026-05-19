@@ -7,109 +7,181 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
 :root{
   --ink:#1a0800;--deep:#2d1000;--warm:#4a1a00;--amber:#c87020;
   --gold:#e8a030;--pale:#f5d080;--ivory:#fdf0e0;--blush:#f08060;
-  --rose:#d04050;--petal:#f8c0b0;--cherry:#8b1a2a;
+  --rose:#d04050;--petal:#f8c0b0;--cherry:#8b1a2a;--seal:#b02020;
 }
 
-.header{background:linear-gradient(170deg,#0d0400,#2d1200,#4a1a00);text-align:center;padding:3rem 1.5rem 2rem;border-bottom:1px solid rgba(232,160,48,.15)}
+/* ── HEADER ── */
+.header{background:linear-gradient(170deg,#0d0400,#2d1200,#4a1a00);text-align:center;padding:3rem 1.5rem 2rem;border-bottom:1px solid rgba(232,160,48,.15);position:relative;overflow:hidden}
 .header h1{font-family:'Great Vibes',cursive;font-size:clamp(2.2rem,6vw,4rem);color:var(--gold);margin-bottom:.3rem}
 .header p{color:var(--petal);font-style:italic;font-size:.9rem;letter-spacing:3px;text-transform:uppercase}
+
+/* ── CANDLE HEADER ── */
+.candle-wrap{display:flex;justify-content:center;gap:3rem;margin-bottom:1.5rem}
+.candle{position:relative;width:22px;height:60px}
+.candle-body{width:22px;height:50px;background:linear-gradient(180deg,#f5e0c0,#e8c890);border-radius:3px 3px 0 0;position:absolute;bottom:0}
+.candle-wick{width:2px;height:8px;background:#444;position:absolute;top:0;left:10px}
+.candle-flame{position:absolute;top:-12px;left:6px;width:10px;height:16px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:radial-gradient(ellipse at 40% 30%,#fff8e0,#f5c040 30%,#e07800 70%,transparent);animation:flicker .3s ease-in-out infinite alternate;transform-origin:center bottom}
+.candle-flame::before{content:'';position:absolute;inset:3px;border-radius:50%;background:radial-gradient(ellipse,#fff8e0,transparent 60%);animation:flicker .15s ease-in-out infinite alternate}
+.candle-glow{position:absolute;top:-20px;left:-10px;width:42px;height:50px;border-radius:50%;background:radial-gradient(ellipse,rgba(232,160,48,.3),transparent 70%);animation:glowPulse 2s ease-in-out infinite;pointer-events:none}
+@keyframes flicker{0%{transform:scaleY(1) scaleX(1) rotate(-1deg)}50%{transform:scaleY(1.08) scaleX(.92) rotate(1deg)}100%{transform:scaleY(.92) scaleX(1.05) rotate(-.5deg)}}
+@keyframes glowPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
+.candle-drip{position:absolute;bottom:0;width:4px;height:0;background:linear-gradient(#e8c890,#d0a870);border-radius:0 0 2px 2px;animation:drip 4s ease-in infinite}
+.candle-drip:nth-child(4){left:4px;animation-delay:1.5s}
+.candle-drip:nth-child(5){right:4px;animation-delay:3s}
+@keyframes drip{0%{height:0;opacity:0}30%{height:0;opacity:0}40%{height:8px;opacity:1}80%{height:8px;opacity:1}100%{height:14px;opacity:0}}
 
 .container{max-width:700px;margin:0 auto;padding:2rem 1rem}
 
 .btn{background:var(--amber);color:var(--ink);border:none;padding:.7rem 1.8rem;border-radius:50px;font-family:'Josefin Sans',sans-serif;font-size:.85rem;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase}
 .btn:hover{background:var(--gold);transform:scale(1.04)}
 .btn-sm{padding:.5rem 1.2rem;font-size:.75rem}
-.btn-rose{background:var(--rose)}
-.btn-rose:hover{background:#e05060}
 
-.letter-list{display:grid;gap:.8rem}
-.letter-card{background:rgba(200,112,32,.07);border:1px solid rgba(200,112,32,.2);border-radius:1rem;padding:1.2rem 1.5rem;cursor:pointer;transition:all .3s;display:flex;justify-content:space-between;align-items:center}
-.letter-card:hover{background:rgba(200,112,32,.15);border-color:var(--gold);transform:translateX(5px)}
-.letter-card.locked{opacity:.7}
-.letter-card.locked .lc-title::after{content:' 🔒';font-size:.8rem}
-.lc-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);font-style:italic}
-.lc-date{font-size:.75rem;color:var(--amber);letter-spacing:1px;margin-top:.2rem}
-.lc-lock{font-size:1rem;color:var(--petal)}
+/* ── ENVELOPE LIST ── */
+.envelope-list{display:grid;gap:1.2rem}
+.envelope{background:linear-gradient(145deg,#2d1000,#4a1a00);border:1px solid rgba(232,160,48,.2);border-radius:1rem;padding:1.2rem;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;display:flex;align-items:center;gap:1rem}
+.envelope:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 8px 30px rgba(232,160,48,.15)}
+.envelope-flap{width:44px;height:34px;position:relative;flex-shrink:0;transition:transform .4s}
+.envelope-flap svg{width:100%;height:100%}
+.envelope:hover .envelope-flap{transform:rotate(-5deg)}
+.envelope-info{flex:1}
+.envelope-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--gold);font-style:italic}
+.envelope-date{font-size:.72rem;color:var(--amber);letter-spacing:1px;margin-top:.15rem}
+.envelope-to{font-size:.78rem;color:var(--petal);margin-top:.1rem}
 
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+/* ── WAX SEAL ── */
+.wax-seal{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#d03030,#8b1a2a 60%,#601010);flex-shrink:0;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:all .6s}
+.wax-seal::before{content:'S';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Great Vibes',cursive;font-size:1.1rem;color:rgba(255,255,255,.5);transform:rotate(-15deg)}
+.wax-seal.unlocked{animation:sealBreak .8s forwards}
+@keyframes sealBreak{0%{transform:scale(1);opacity:1}30%{transform:scale(1.15);opacity:1}50%{transform:scale(1.2);opacity:.8;box-shadow:0 0 20px rgba(200,50,40,.6)}100%{transform:scale(0);opacity:0}}
+.wax-drip{position:absolute;bottom:-4px;width:6px;height:0;background:linear-gradient(#8b1a2a,#601010);border-radius:0 0 3px 3px}
+.wax-drip.l{left:2px;height:6px;transform:rotate(-5deg)}
+.wax-drip.r{right:2px;height:4px;transform:rotate(8deg)}
+.wax-drip.m{left:14px;height:5px}
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem;backdrop-filter:blur(4px)}
 .modal-overlay.open{display:flex}
-.modal{background:#2d1000;border:1px solid rgba(232,160,48,.3);border-radius:1.5rem;padding:2rem;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;position:relative}
-.modal-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:var(--petal);font-size:1.5rem;cursor:pointer}
-.modal h2{font-family:'Great Vibes',cursive;font-size:2rem;color:var(--gold);margin-bottom:.5rem}
-.modal .date{font-size:.75rem;color:var(--amber);letter-spacing:2px;margin-bottom:1.5rem}
-.modal .body{font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;line-height:2;color:var(--petal);white-space:pre-wrap}
-.pw-input{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
-.pw-input input{flex:1;min-width:150px;background:rgba(255,255,255,.08);border:1px solid rgba(232,160,48,.3);border-radius:50px;padding:.7rem 1.2rem;color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-size:.9rem;outline:none}
-.pw-input input:focus{border-color:var(--gold)}
-.pw-error{color:var(--rose);font-size:.85rem;margin-top:.5rem;display:none}
+.modal{background:linear-gradient(160deg,#2d1000,#1a0800);border:1px solid rgba(232,160,48,.3);border-radius:1.5rem;padding:2rem;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;position:relative;animation:modalIn .4s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-close{position:absolute;top:1rem;right:1.2rem;background:none;border:none;color:var(--petal);font-size:1.5rem;cursor:pointer;z-index:2;transition:transform .2s}
+.modal-close:hover{transform:rotate(90deg)}
 
-.new-letter-btn{display:block;margin:0 auto 2rem}
-
+/* ── NEW LETTER FORM ── */
 .new-form{display:grid;gap:1rem}
-.new-form input,.new-form textarea,.new-form select{background:rgba(255,255,255,.06);border:1px solid rgba(232,160,48,.25);border-radius:.8rem;padding:.8rem 1rem;color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-size:.9rem;outline:none}
+.new-form input,.new-form textarea,.new-form select{background:rgba(255,255,255,.06);border:1px solid rgba(232,160,48,.25);border-radius:.8rem;padding:.8rem 1rem;color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s}
 .new-form input:focus,.new-form textarea:focus{border-color:var(--gold)}
 .new-form textarea{min-height:200px;resize:vertical;font-family:'Playfair Display',serif;font-style:italic;line-height:1.8}
-.new-form label{font-size:.8rem;letter-spacing:2px;color:var(--pale);text-transform:uppercase}
+.new-form label{font-size:.78rem;letter-spacing:2px;color:var(--pale);text-transform:uppercase}
 .new-form .row{display:grid;gap:.4rem}
+.modal h2.modal-title{font-family:'Great Vibes',cursive;font-size:1.8rem;color:var(--gold);text-align:center;margin-bottom:.2rem}
+.modal .modal-sub{text-align:center;color:var(--petal);font-size:.82rem;margin-bottom:1.5rem;font-style:italic}
+
+/* ── ENVELOPE OPENING ANIMATION ── */
+.envelope-open-wrap{position:relative;width:100%;max-width:400px;margin:0 auto;perspective:800px}
+.envelope-open{position:relative;width:100%;padding-bottom:70%;transition:all .8s}
+.envelope-open.open .eo-flap{transform:rotateX(180deg)}
+.envelope-open.open .eo-body{transform:translateY(0)}
+.eo-body{position:absolute;inset:0;background:linear-gradient(145deg,#4a1a00,#2d1000);border:2px solid rgba(232,160,48,.3);border-radius:1rem;display:flex;align-items:center;justify-content:center;transform:translateY(0);transition:all .6s .3s;overflow:hidden}
+.eo-flap{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(160deg,#5a2000,#3d1000);border:2px solid rgba(232,160,48,.3);border-bottom:none;border-radius:1rem 1rem 0 0;transform-origin:top;transform:rotateX(0);transition:transform .6s ease;z-index:2;display:flex;align-items:center;justify-content:center}
+.eo-flap::after{content:'✉';font-size:2rem;color:var(--gold);opacity:.3}
+.eo-wax-seal{position:absolute;bottom:20%;left:50%;transform:translateX(-50%);width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#d03030,#8b1a2a 60%,#601010);z-index:3;box-shadow:0 3px 12px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;transition:all .6s}
+.eo-wax-seal::before{content:'S';font-family:'Great Vibes',cursive;font-size:1.3rem;color:rgba(255,255,255,.5);transform:rotate(-15deg)}
+.eo-wax-seal.break{animation:sealBreakBig .8s forwards}
+@keyframes sealBreakBig{0%{transform:translateX(-50%) scale(1);opacity:1}30%{transform:translateX(-50%) scale(1.2);opacity:1}50%{transform:translateX(-50%) scale(1.3);opacity:.7;box-shadow:0 0 40px rgba(200,50,40,.7)}100%{transform:translateX(-50%) scale(0);opacity:0}}
+
+/* ── LETTER PAPER UNFOLD ── */
+.letter-paper{background:linear-gradient(180deg,#fdf0e0,#f5e8d0,#fdf0e0);border-radius:.5rem;padding:2.5rem 2rem;position:relative;box-shadow:0 4px 30px rgba(0,0,0,.3);transform:rotateX(90deg);transform-origin:top;animation:unfold .8s ease .6s forwards;max-width:500px;margin:1rem auto}
+@keyframes unfold{from{transform:rotateX(90deg);opacity:0}to{transform:rotateX(0);opacity:1}}
+.letter-paper .lp-to{font-family:'Great Vibes',cursive;font-size:1.6rem;color:var(--cherry);margin-bottom:.8rem}
+.letter-paper .lp-date{font-size:.7rem;color:var(--warm);letter-spacing:2px;margin-bottom:1.2rem;text-transform:uppercase}
+.letter-paper .lp-body{font-family:'Playfair Display',serif;font-style:italic;font-size:1.02rem;color:var(--ink);line-height:2;white-space:pre-wrap}
+.letter-paper .lp-sign{font-family:'Great Vibes',cursive;font-size:1.5rem;color:var(--cherry);text-align:right;margin-top:1.5rem}
+.letter-paper .lp-candle{position:absolute;top:-25px;left:20px;width:14px;height:40px}
+.letter-paper .lp-candle .candle-body{width:14px;height:32px;background:linear-gradient(180deg,#f5e0c0,#e8c890);border-radius:2px 2px 0 0;position:absolute;bottom:0}
+.letter-paper .lp-candle .candle-wick{width:1.5px;height:5px;background:#555;position:absolute;top:0;left:6px}
+.letter-paper .lp-candle .candle-flame{position:absolute;top:-8px;left:3px;width:8px;height:12px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:radial-gradient(ellipse at 40% 30%,#fff8e0,#f5c040 30%,#e07800 70%,transparent);animation:flicker .3s ease-in-out infinite alternate}
+.letter-paper .lp-candle .candle-glow{position:absolute;top:-12px;left:-6px;width:26px;height:30px;border-radius:50%;background:radial-gradient(ellipse,rgba(232,160,48,.3),transparent 70%);animation:glowPulse 2s ease-in-out infinite;pointer-events:none}
+
+/* ── PASSWORD MODAL ── */
+.pw-area{text-align:center;padding:1rem}
+.pw-area .pw-icon{font-size:3rem;margin-bottom:.5rem;display:block}
+.pw-area p{color:var(--petal);font-style:italic;margin-bottom:1.2rem;font-family:'Playfair Display',serif;font-size:1rem}
+.pw-input{display:flex;gap:.5rem;max-width:320px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.pw-input input{flex:1;min-width:150px;background:rgba(255,255,255,.08);border:1px solid rgba(232,160,48,.3);border-radius:50px;padding:.7rem 1.2rem;color:var(--ivory);font-family:'Josefin Sans',sans-serif;font-size:.9rem;outline:none}
+.pw-input input:focus{border-color:var(--gold)}
+.pw-error{color:var(--rose);font-size:.85rem;margin-top:.7rem;display:none}
+
 .empty-state{text-align:center;padding:4rem 1rem;color:var(--amber);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem;line-height:2}
 
 .footer{text-align:center;padding:2rem;border-top:1px solid rgba(232,160,48,.1);color:var(--amber);font-size:.8rem;letter-spacing:2px;margin-top:2rem}
 </style>
 
 <div class="header">
+  <div class="candle-wrap">
+    <div class="candle"><div class="candle-glow"></div><div class="candle-flame"></div><div class="candle-wick"></div><div class="candle-body"></div><div class="candle-drip"></div><div class="candle-drip"></div></div>
+    <div class="candle"><div class="candle-glow"></div><div class="candle-flame" style="animation-delay:.1s"></div><div class="candle-wick"></div><div class="candle-body"></div><div class="candle-drip"></div><div class="candle-drip"></div></div>
+    <div class="candle"><div class="candle-glow"></div><div class="candle-flame" style="animation-delay:.2s"></div><div class="candle-wick"></div><div class="candle-body"></div><div class="candle-drip"></div><div class="candle-drip"></div></div>
+  </div>
   <h1>Letters to You</h1>
-  <p>✧ private words, locked with love ✧</p>
+  <p>✧ sealed with wax, opened with love ✧</p>
 </div>
 
 <div class="container">
-  <button class="btn new-letter-btn" onclick="showNewForm()">✎ Write a New Letter</button>
-
-  <div id="letterList" class="letter-list"></div>
-
-  <div id="emptyState" class="empty-state">
-    No letters yet...<br>
-    Write your first one above ✎
-  </div>
+  <button class="btn" onclick="showNewForm()" style="display:block;margin:0 auto 2rem">✎ Write a New Letter</button>
+  <div id="letterList" class="envelope-list"></div>
+  <div id="emptyState" class="empty-state">No letters yet...<br>Write your first one above ✎</div>
 </div>
 
+<!-- New Letter Modal -->
 <div class="modal-overlay" id="newModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('newModal')">✕</button>
-    <h2 style="text-align:center;font-size:1.5rem;font-family:'Great Vibes',cursive">Write a Letter</h2>
-    <p style="text-align:center;color:var(--petal);font-size:.85rem;margin-bottom:1.5rem">Words from the heart, sealed with a secret</p>
+    <h2 class="modal-title">Write a Letter</h2>
+    <p class="modal-sub">Words from the heart, sealed with a secret</p>
     <div class="new-form">
       <div class="row"><label>To</label><input id="newTo" placeholder="My dearest..." value="My dearest Helsa"></div>
       <div class="row"><label>Title</label><input id="newTitle" placeholder="A letter title..."></div>
       <div class="row"><label>Your Letter</label><textarea id="newBody" placeholder="Write from the heart..."></textarea></div>
-      <div class="row"><label>Password (to lock this letter)</label><input id="newPw" type="password" placeholder="Set a secret password"></div>
-      <button class="btn" onclick="saveLetter()" style="margin-top:.5rem">💛 Save & Lock Letter</button>
+      <div class="row"><label>Password <span style="color:var(--amber);font-weight:300">(leave blank for open letter)</span></label><input id="newPw" type="password" placeholder="Set a secret password"></div>
+      <button class="btn" onclick="saveLetter()" style="margin-top:.5rem">💛 Seal & Save Letter</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="viewModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
-    <h2 id="viewTo"></h2>
-    <div class="date" id="viewDate"></div>
-    <div class="body" id="viewBody"></div>
+<!-- Envelope Open Modal -->
+<div class="modal-overlay" id="envelopeModal">
+  <div class="modal" style="max-width:580px;text-align:center;overflow:visible">
+    <button class="modal-close" onclick="closeEnvelope()">✕</button>
+    <div class="envelope-open-wrap">
+      <div class="envelope-open" id="eo">
+        <div class="eo-flap"></div>
+        <div class="eo-wax-seal" id="eoSeal"></div>
+        <div class="eo-body">
+          <div style="color:var(--petal);font-style:italic;font-family:'Playfair Display',serif;padding:1rem" id="eoHint">A letter awaits you...</div>
+        </div>
+      </div>
+    </div>
+    <div id="letterPaperArea"></div>
   </div>
 </div>
 
+<!-- Password Modal -->
 <div class="modal-overlay" id="pwModal">
-  <div class="modal" style="text-align:center">
+  <div class="modal" style="max-width:400px">
     <button class="modal-close" onclick="closeModal('pwModal')">✕</button>
-    <h2 style="font-size:1.8rem">🔒</h2>
-    <p style="color:var(--petal);font-style:italic;margin:.5rem 0 1rem;font-family:'Playfair Display',serif">This letter is locked with a password</p>
-    <div class="pw-input" style="justify-content:center">
-      <input id="pwInput" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')unlockLetter()">
-      <button class="btn btn-sm" onclick="unlockLetter()">Unlock</button>
+    <div class="pw-area">
+      <span class="pw-icon">🔒</span>
+      <p>This letter is sealed with a secret password</p>
+      <div class="pw-input">
+        <input id="pwInput" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')unlockLetter()">
+        <button class="btn btn-sm" onclick="unlockLetter()">Unlock</button>
+      </div>
+      <div class="pw-error" id="pwError">Wrong password. Try again 💛</div>
     </div>
-    <div class="pw-error" id="pwError">Wrong password. Try again 💛</div>
   </div>
 </div>
 
-<div class="footer">✧ written with love, sealed with a secret ✧</div>
+<div class="footer">✧ sealed with wax, opened with love ✧</div>
 
 <script>
 let letters=JSON.parse(localStorage.getItem('loveLetters')||'[]');
@@ -123,8 +195,18 @@ function render(){
   empty.style.display='none';
   letters.forEach((l,i)=>{
     const div=document.createElement('div');
-    div.className='letter-card'+(l.pw?' locked':'');
-    div.innerHTML=`<div><div class="lc-title">${esc(l.title)}</div><div class="lc-date">${l.date} · ${esc(l.to)}</div></div><div class="lc-lock">${l.pw?'🔒':'💛'}</div>`;
+    div.className='envelope';
+    div.innerHTML=`
+      <div class="envelope-flap">
+        <svg viewBox="0 0 44 34"><path d="M2 32 L22 12 L42 32" fill="none" stroke="#e8a030" stroke-width="1.5" opacity=".5"/><rect x="2" y="2" width="40" height="28" rx="3" fill="none" stroke="#c87020" stroke-width="1.2" opacity=".4"/><path d="M2 2 L22 18 L42 2" fill="none" stroke="#e8a030" stroke-width="1" opacity=".3"/></svg>
+      </div>
+      <div class="envelope-info">
+        <div class="envelope-title">${esc(l.title)}</div>
+        <div class="envelope-date">${l.date}</div>
+        <div class="envelope-to">${esc(l.to)}</div>
+      </div>
+      ${l.pw?`<div class="wax-seal" id="seal${i}"><div class="wax-drip l"></div><div class="wax-drip r"></div><div class="wax-drip m"></div></div>`:'<div style="font-size:1.5rem;flex-shrink:0">💛</div>'}
+    `;
     div.onclick=()=>openLetter(i);
     list.appendChild(div);
   });
@@ -133,20 +215,52 @@ function render(){
 function openLetter(i){
   const l=letters[i];
   if(l.pw){pwTarget=i;document.getElementById('pwInput').value='';document.getElementById('pwError').style.display='none';openModal('pwModal')}
-  else{showLetter(l)}
+  else{showEnvelope(l)}
 }
 
 function unlockLetter(){
   const l=letters[pwTarget];
-  if(document.getElementById('pwInput').value===l.pw){closeModal('pwModal');showLetter(l)}
-  else{document.getElementById('pwError').style.display='block'}
+  if(document.getElementById('pwInput').value===l.pw){
+    closeModal('pwModal');
+    document.getElementById(`seal${pwTarget}`).classList.add('unlocked');
+    setTimeout(()=>showEnvelope(l),800);
+  }else{
+    document.getElementById('pwError').style.display='block'
+  }
 }
 
-function showLetter(l){
-  document.getElementById('viewTo').textContent=l.to;
-  document.getElementById('viewDate').textContent=l.date;
-  document.getElementById('viewBody').textContent=l.body;
-  openModal('viewModal');
+function showEnvelope(l){
+  document.getElementById('letterPaperArea').innerHTML='';
+  const eo=document.getElementById('eo');
+  eo.classList.remove('open');
+  const seal=document.getElementById('eoSeal');
+  seal.className='eo-wax-seal';
+  seal.style.display='flex';
+  document.getElementById('eoHint').textContent='A letter awaits you...';
+  openModal('envelopeModal');
+  setTimeout(()=>{
+    eo.classList.add('open');
+    if(l.pw){seal.classList.add('break');setTimeout(()=>{seal.style.display='none';showPaper(l)},900)}
+    else{setTimeout(()=>{seal.style.display='none';showPaper(l)},500)}
+  },300);
+}
+
+function showPaper(l){
+  document.getElementById('letterPaperArea').innerHTML=`
+    <div class="letter-paper">
+      <div class="lp-candle"><div class="candle-glow"></div><div class="candle-flame"></div><div class="candle-wick"></div><div class="candle-body"></div></div>
+      <div class="lp-to">${esc(l.to)}</div>
+      <div class="lp-date">${l.date}</div>
+      <div class="lp-body">${esc(l.body)}</div>
+      <div class="lp-sign">💛</div>
+    </div>
+  `;
+}
+
+function closeEnvelope(){
+  closeModal('envelopeModal');
+  document.getElementById('letterPaperArea').innerHTML='';
+  document.getElementById('eo').classList.remove('open');
 }
 
 function saveLetter(){
