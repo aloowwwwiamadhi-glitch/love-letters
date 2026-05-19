@@ -181,6 +181,9 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
   </div>
 </div>
 
+<div style="text-align:center;margin-top:1rem">
+  <button class="btn btn-sm" onclick="resetLetters()" style="background:transparent;color:var(--amber);border:1px solid rgba(200,112,32,.3);font-size:.7rem">🗑 Reset All Letters</button>
+</div>
 <div class="footer">✧ sealed with wax, opened with love ✧</div>
 
 <script>
@@ -275,6 +278,7 @@ function saveLetter(){
   closeModal('newModal');render();
 }
 
+function resetLetters(){if(confirm('Delete all letters? This cannot be undone 💛')){letters=[];localStorage.setItem('loveLetters','[]');render()}}
 function showNewForm(){openModal('newModal')}
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
