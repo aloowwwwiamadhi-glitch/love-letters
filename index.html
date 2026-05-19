@@ -151,9 +151,9 @@ body{font-family:'Josefin Sans',sans-serif;background:#1a0800;color:#fdf0e0;min-
 </div>
 
 <!-- New Letter Modal -->
-<div class="modal-overlay" id="newModal">
+<div class="modal-overlay" id="newModal" onclick="if(event.target==this)this.style.display='none'">
   <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('newModal').style.display='none'">✕</button>
+    <button class="modal-close" onclick="document.getElementById('newModal').style.display='none';event.stopPropagation()">✕</button>
     <h2 class="modal-title">Write a Letter</h2>
     <p class="modal-sub">Words from the heart, sealed with a secret</p>
     <p style="color:var(--amber);font-size:.78rem;text-align:center;font-style:italic;margin:-.5rem 0 1.2rem">Leave blank for an open letter ✦ set a password to seal it</p>
